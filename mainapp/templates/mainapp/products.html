@@ -22,21 +22,20 @@
 				<img src="{% static 'img/slider1.jpg' %}">
 			</div>
 			<div class="slider-control">
+				{% for product in same_products %}
 				<div class="block">
-					<a href="#"><img src="{% static 'img/controll.jpg' %}" alt="">
-						<div class="text"></div>
+					<a href="#"><img src="{{ media_url }}{{ product.image }}" alt="{{ product.short_desc }}">
+						<div class="text">
+							<img src="/static/img/icon-hover.png" alt="img">
+							<h3>Категория:{{ product.category.name }}</h3>
+							<h4>Название: {{ product.name }}</h4>
+							<p>Описание: {{ product.description }} </p>
+							<p>Цена: {{ product.price }} </p>
+							<p>На складе: {{ product.quantity }} </p>
+						</div>
 					</a>
 				</div>
-				<div class="block">
-					<a href="#"><img src="{% static 'img/controll1.jpg' %}" alt="">
-						<div class="text"></div>
-					</a>
-				</div>
-				<div class="block">
-					<a href="#"><img src="{% static 'img/controll2.jpg' %}" alt="">
-						<div class="text"></div>
-					</a>
-				</div>
+				{% endfor %}
 			</div>
 		</div>
 
