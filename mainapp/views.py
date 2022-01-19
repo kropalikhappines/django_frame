@@ -39,7 +39,7 @@ def products(request, pk=None):
     title = "продукты"
     links_menu = ProductCategory.objects.all()
     basket = get_basket(request.user)
-    
+
     if pk is not None:
         if pk == 0:
             products = Product.objects.all().order_by("price")
