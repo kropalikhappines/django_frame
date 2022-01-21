@@ -1,7 +1,5 @@
 from django.urls import path
 
-from django.urls import path
-
 import adminapp.views as adminapp
 
 from .apps import AdminappConfig
