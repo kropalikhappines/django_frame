@@ -65,6 +65,7 @@ TEMPLATES = [
                 "mainapp.context_processors.basket",
                 "social_django.context_processors.backends",
                 "social_django.context_processors.login_redirect",
+
             ],
         },
     },
@@ -87,20 +88,27 @@ DATABASES = {
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
 
-AUTH_PASSWORD_VALIDATORS = [
-    {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
-    },
-]
+# Password validation
+# https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
+
+if not DEBUG:
+    AUTH_PASSWORD_VALIDATORS = [
+        {
+            "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
+        },
+        {
+            "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+        },
+        {
+            "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
+        },
+        {
+            "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
+        },
+    ]
+else:
+    # Set simple password for debug
+    AUTH_PASSWORD_VALIDATORS = []
 
 
 # Internationalization
@@ -152,3 +160,26 @@ with open(
 
 SOCIAL_AUTH_GITHUB_KEY = github_auth["client_id"]
 SOCIAL_AUTH_GITHUB_SECRET = github_auth["client_secret"]
+DOMAIN_NAME = "http://localhost:8000"
+
+# Read about sending email:
+#   https://docs.djangoproject.com/en/2.2/topics/email/
+
+# Full list of email settings:
+#   https://docs.djangoproject.com/en/2.2/ref/settings/#email
+EMAIL_HOST = "localhost"
+EMAIL_PORT = "25"
+
+EMAIL_USE_SSL = False
+# If server support TLS:
+# EMAIL_USE_TLS = True
+
+# EMAIL_HOST_USER = "django@geekshop.local"
+# EMAIL_HOST_PASSWORD = "geekshop"
+# For debugging: python -m smtpd -n -c DebuggingServer localhost:25
+EMAIL_HOST_USER = None
+EMAIL_HOST_PASSWORD = None
+
+# Email as files
+EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
+EMAIL_FILE_PATH = "tmp/email-messages/"

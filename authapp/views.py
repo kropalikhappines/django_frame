@@ -71,6 +71,7 @@ def edit(request):
 
     content = {"title": title, "edit_form": edit_form, "profile_form": profile_form, "media_url": settings.MEDIA_URL}
 
+
     return render(request, "authapp/edit.html", content)
 
 
@@ -100,6 +101,7 @@ def verify(request, email, activation_key):
             user.is_active = True
             user.save()
             auth.login(request, user, backend="django.contrib.auth.backends.ModelBackend")
+
 
             return render(request, "authapp/verification.html")
         print(f"error activation user: {user}")
