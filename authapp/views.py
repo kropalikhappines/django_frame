@@ -1,9 +1,11 @@
 from django.conf import settings
 from django.contrib import auth
+from django.core.mail import send_mail
+from django.db import transaction
 from django.shortcuts import HttpResponseRedirect, render
 from django.urls import reverse
 
-from authapp.forms import ShopUserEditForm, ShopUserLoginForm, ShopUserRegisterForm
+from authapp.forms import ShopUserEditForm, ShopUserLoginForm, ShopUserProfileEditForm, ShopUserRegisterForm
 from authapp.models import ShopUser
 
 
@@ -40,24 +42,54 @@ def register(request):
         register_form = ShopUserRegisterForm(request.POST, request.FILES)
 
         if register_form.is_valid():
-            register_form.save()
+            user = register_form.save()
+            if send_verify_mail(user):
+                print("сообщение для подтверждения регистрации отправлено")
+                return HttpResponseRedirect(reverse("auth:login"))
+            print("ошибка отправки сообщения для подтверждения регистрации")
             return HttpResponseRedirect(reverse("auth:login"))
-    register_form = ShopUserRegisterForm()
+    else:
+        register_form = ShopUserRegisterForm()
+
     content = {"title": title, "register_form": register_form}
     return render(request, "authapp/register.html", content)
 
 
+@transaction.atomic
 def edit(request):
     title = "редактирование"
 
     if request.method == "POST":
         edit_form = ShopUserEditForm(request.POST, request.FILES, instance=request.user)
-        if edit_form.is_valid():
+        profile_form = ShopUserProfileEditForm(request.POST, instance=request.user.shopuserprofile)
+        if edit_form.is_valid() and profile_form.is_valid():
             edit_form.save()
             return HttpResponseRedirect(reverse("auth:edit"))
-    edit_form = ShopUserEditForm(instance=request.user)
-    content = {"title": title, "edit_form": edit_form, "media_url": settings.MEDIA_URL}
+    else:
+        edit_form = ShopUserEditForm(instance=request.user)
+        profile_form = ShopUserProfileEditForm(instance=request.user.shopuserprofile)
+
+    content = {"title": title, "edit_form": edit_form, "profile_form": profile_form, "media_url": settings.MEDIA_URL}
+
     return render(request, "authapp/edit.html", content)
+
+
+def send_verify_mail(user):
+    verify_link = reverse("auth:verify", args=[user.email, user.activation_key])
+
+    title = f"Подтверждение учетной записи {user.username}"
+    message = f"Для подтверждения учетной записи {user.username} \
+    на портале {settings.DOMAIN_NAME} перейдите по ссылке: \
+    \n{settings.DOMAIN_NAME}{verify_link}"
+
+    print(f"from: {settings.EMAIL_HOST_USER}, to: {user.email}")
+    return send_mail(
+        title,
+        message,
+        settings.EMAIL_HOST_USER,
+        [user.email],
+        fail_silently=False,
+    )
 
 
 def verify(request, email, activation_key):
