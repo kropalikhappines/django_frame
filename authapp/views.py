@@ -4,6 +4,7 @@ from django.shortcuts import HttpResponseRedirect, render
 from django.urls import reverse
 
 from authapp.forms import ShopUserEditForm, ShopUserLoginForm, ShopUserRegisterForm
+from authapp.models import ShopUser
 
 
 def login(request):
@@ -57,3 +58,22 @@ def edit(request):
     edit_form = ShopUserEditForm(instance=request.user)
     content = {"title": title, "edit_form": edit_form, "media_url": settings.MEDIA_URL}
     return render(request, "authapp/edit.html", content)
+
+
+def verify(request, email, activation_key):
+    try:
+        user = ShopUser.objects.get(email=email)
+        if user.activation_key == activation_key and not user.is_activation_key_expired():
+            print(f"user {user} is activated")
+            user.is_active = True
+            user.save()
+            auth.login(request, user, backend="django.contrib.auth.backends.ModelBackend")
+
+            return render(request, "authapp/verification.html")
+        print(f"error activation user: {user}")
+        return render(request, "authapp/verification.html")
+
+    except Exception as e:
+        print(f"error activation user : {e.args}")
+
+    return HttpResponseRedirect(reverse("main"))
