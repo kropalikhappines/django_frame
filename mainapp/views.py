@@ -160,9 +160,13 @@ def product(request, pk):
     return render(request, "mainapp/product.html", content)
 
 
+from django.views.decorators.cache import cache_page
+
+@cache_page(600)
 def contact(request):
     title = "о нас"
     visit_date = timezone.now()
     locations = Contact.objects.all()
     content = {"title": title, "visit_date": visit_date, "locations": locations}
     return render(request, "mainapp/contact.html", content)
+    
