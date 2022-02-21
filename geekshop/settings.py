@@ -51,7 +51,6 @@ MIDDLEWARE = [
 ]
 
 
-
 ROOT_URLCONF = "geekshop.urls"
 
 TEMPLATES = [
@@ -257,4 +256,3 @@ CACHES = {
 }
 
 LOW_CACHE = True
-

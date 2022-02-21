@@ -1,15 +1,13 @@
 from django.conf import settings
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import (HttpResponseRedirect, get_object_or_404,
-                              redirect, render)
+from django.shortcuts import HttpResponseRedirect, get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.views.generic.list import ListView
 
-from adminapp.forms import (ProductCategoryEditForm, ProductEditForm,
-                            ShopUserAdminEditForm)
+from adminapp.forms import ProductCategoryEditForm, ProductEditForm, ShopUserAdminEditForm
 from authapp.forms import ShopUserRegisterForm
 from authapp.models import ShopUser
 from mainapp.models import Product, ProductCategory
@@ -184,9 +182,12 @@ def product_delete(request, pk):
 
     content = {"title": title, "product_to_delete": product, "media_url": settings.MEDIA_URL}
     return render(request, "adminapp/product_delete.html", content)
+
+
 from django.db import connection
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
+
 
 def db_profile_by_type(prefix, type, queries):
     update_queries = list(filter(lambda x: type in x["sql"], queries))
@@ -204,4 +205,3 @@ def product_is_active_update_productcategory_save(sender, instance, **kwargs):
 
         # db_profile_by_type(sender, 'UPDATE', connection.queries)
 
-        
