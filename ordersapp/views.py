@@ -149,7 +149,6 @@ from django.http import JsonResponse
 from mainapp.models import Product
 
 
-
 def get_product_price(request, pk):
     if request.is_ajax():
         product = Product.objects.filter(pk=int(pk)).first()
