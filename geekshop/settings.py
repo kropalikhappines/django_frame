@@ -243,7 +243,6 @@ if DEBUG:
     ]
 # <--- Django Debug Toolbar
 
-
 CACHE_MIDDLEWARE_ALIAS = "default"
 CACHE_MIDDLEWARE_SECONDS = 120
 CACHE_MIDDLEWARE_KEY_PREFIX = "geekbrains"
@@ -258,3 +257,4 @@ CACHES = {
 }
 
 LOW_CACHE = True
+
